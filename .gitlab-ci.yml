@@ -1,6 +1,6 @@
 image: node:latest
 
 lint: 
-  scripts:
+  script:
    - npm install
    - npm run-script lint
