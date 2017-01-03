@@ -1,0 +1,16 @@
+{
+  "name": "localneo",
+  "version": "1.0.1",
+  "author": "m.schmale@uniorg.de",
+  "bin": {
+    "localneo": "./start.js"
+  },
+  "scripts": {
+    "lint": "standard"
+  },
+  "dependencies": {
+    "ecstatic": "^2.1.0",
+    "http-proxy": "^1.16.2",
+    "standard": "^8.6.0"
+  }
+}

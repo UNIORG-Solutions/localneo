@@ -1,0 +1,6 @@
+image: node:latest
+
+lint: 
+  scripts:
+   - npm install
+   - npm run-script lint
