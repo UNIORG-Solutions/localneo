@@ -7,10 +7,11 @@ const ServiceFactory = require('./ServiceFactory')
 const AppRegistry = require('./Registry')
 
 class MapReader {
-  constructor (neoApp, destinations, path) {
+  constructor (neoApp, destinations, basePath) {
     this.neoApp = neoApp
     this.dest = destinations
-    this.dir = path
+    this.dir = basePath
+    this.name = path.basename(basePath)
   }
 
   getApplication () {
@@ -19,8 +20,6 @@ class MapReader {
       let desc = route.description
       let name = route.name
       let target = this.getTarget(route.target, route.path)
-
-     // console.log('router for ', path, ' is: ', target)
 
       return { path, desc, target, name }
     })
@@ -41,9 +40,9 @@ class MapReader {
     switch (targetInfo.type) {
       case 'application':
         if (!this.dest.applications || !this.dest.applications[targetInfo.name]) {
-          console.error(`cannot find application definition for target ${targetInfo.name}`)
+          console.error(`${this.name}: cannot find application definition for target ${targetInfo.name}`)
           if (reg.has('app:' + targetInfo.name)) {
-            console.error('using cached version...')
+            console.error(`${this.name}: using cached version...`)
             return reg.get('app:' + targetInfo.name)
           }
           return
@@ -57,9 +56,9 @@ class MapReader {
         return app
       case 'destination':
         if (!this.dest.destinations || !this.dest.destinations[targetInfo.name]) {
-          console.error(`cannot find destination definition for target ${targetInfo.name}`)
+          console.error(`${this.name}: cannot find destination definition for target ${targetInfo.name}`)
           if (reg.has('dest:' + targetInfo.name)) {
-            console.error('using cached version...')
+            console.error(`${this.name}: using cached version...`)
             return reg.get('dest:' + targetInfo.name)
           }
           return
