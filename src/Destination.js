@@ -7,7 +7,7 @@ class Destination extends Router {
     this.url = url
     this.remotePath = remotePath
     this.proxy = proxy.createProxyServer({
-      target: (url ? url : '') + '/' + (remotePath ? remotePath :''),
+      target: (url || '') + '/' + (remotePath || ''),
       auth: auth,
       secure: false,
       prependPath: true,
