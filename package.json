@@ -3,6 +3,17 @@
   "version": "1.3.0",
   "author": "m.schmale@uniorg.de",
   "license": "MIT",
+  "keywords": [
+    "SAP",
+    "WebIDE",
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "repository": "git@github.com:UNIORG-Solutions/localneo.git",
+  "bugs": "https://github.com/UNIORG-Solutions/localneo/issues",
+  "description": "Run your SAP-WebIDE based applications locally using the neo-app.json as a web server config.",
+  "homepage": "https://github.com/UNIORG-Solutions/localneo",
   "bin": {
     "localneo": "./start.js"
   },
