@@ -1,9 +1,11 @@
 # localneo
 
+Run your SAP-WebIDE based applications locally using the neo-app.json as a web server config.  
+
 ## install
 
 ``` 
-npm install --global --registry=https://nexus.uniorg.de/repository/npm-all localneo
+npm install --global @uniorg/localneo
 ``` 
 
 ## configuration

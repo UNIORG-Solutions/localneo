@@ -1,15 +1,13 @@
 {
-  "name": "localneo",
-  "version": "1.2.1",
+  "name": "@uniorg/localneo",
+  "version": "1.3.0",
   "author": "m.schmale@uniorg.de",
+  "license": "MIT",
   "bin": {
     "localneo": "./start.js"
   },
   "scripts": {
     "lint": "standard"
-  },
-  "publishConfig": {
-    "registry": "https://nexus.uniorg.de/repository/npm-uniorg"
   },
   "dependencies": {
     "ecstatic": "^2.1.0",
