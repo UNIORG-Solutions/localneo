@@ -5,8 +5,9 @@ class Router {
     throw new Error('unimplemented')
   }
 
-  listen (port) {
-    return http.createServer(this.handle.bind(this)).listen(port)
+  listen (port, hostname, backlog, callback) {
+    this.server = http.createServer(this.handle.bind(this))
+    return this.server.listen.apply(this.server, arguments)
   }
 }
 

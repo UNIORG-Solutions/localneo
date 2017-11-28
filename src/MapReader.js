@@ -12,6 +12,15 @@ class MapReader {
     this.dest = destinations
     this.dir = basePath
     this.name = path.basename(basePath)
+
+    this.port = 4567
+    this.hostname = 'localhost'
+    if (this.dest.server && this.dest.server.port) {
+      this.port = this.dest.server.port
+    }
+    if (this.dest.server && this.dest.server.hostname) {
+      this.hostname = this.dest.server.hostname
+    }
   }
 
   getApplication () {
