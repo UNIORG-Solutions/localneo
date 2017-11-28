@@ -18,7 +18,7 @@ class Application extends StaticDirectory {
 
         request.url = request.url.replace(new RegExp('^' + router.path), '')
         if (!request.url.startsWith('/')) {
-          request.url = '/' + request.url;
+          request.url = '/' + request.url
         }
 
         return router.target.handle(request, response)
