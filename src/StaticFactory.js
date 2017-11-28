@@ -1,7 +1,6 @@
 const StaticDirectory = require('./StaticDirectory')
 
 class StaticFactory {
-
   constructor (path, index) {
     this.path = path
     this.index = index
