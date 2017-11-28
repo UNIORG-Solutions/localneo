@@ -2,10 +2,25 @@ const Router = require('../Router')
 const proxy = require('http-proxy')
 
 class SapUI5 extends Router {
-  constructor ({ remotePath, localPath }) {
+  constructor ({ remotePath, localPath, serviceConfig }) {
     super()
+
+    let prefix = 'https://openui5.hana.ondemand.com/'
+    if (serviceConfig.resourceUrl) {
+      prefix = serviceConfig.resourceUrl
+    } else {
+      if (serviceConfig.useSAPUI5) {
+        prefix = 'https://sapui5.hana.ondemand.com/'
+      }
+
+      if (serviceConfig.version) {
+        prefix += serviceConfig.version
+      }
+    }
+
+    console.log("Serving UI5 from %s", prefix);
     this.proxy = proxy.createProxyServer({
-      target: 'https://openui5.hana.ondemand.com/' + remotePath,
+      target: prefix + remotePath,
       secure: false,
       prependPath: true,
       changeOrigin: true

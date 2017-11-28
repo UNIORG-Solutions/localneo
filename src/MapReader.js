@@ -71,7 +71,11 @@ class MapReader {
         return dest
 
       case 'service':
-        return ServiceFactory.create(targetInfo, targetPath)
+        let serviceConfig = {}
+        if (this.dest && this.dest.service && this.dest.service[targetInfo.name]) {
+          serviceConfig = this.dest.service[targetInfo.name]
+        }
+        return ServiceFactory.create(targetInfo, targetPath, serviceConfig)
     }
   }
 
