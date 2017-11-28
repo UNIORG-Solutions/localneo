@@ -18,7 +18,7 @@ class SapUI5 extends Router {
       }
     }
 
-    console.log("Serving UI5 from %s", prefix);
+    console.log('Serving UI5 from %s', prefix)
     this.proxy = proxy.createProxyServer({
       target: prefix + remotePath,
       secure: false,

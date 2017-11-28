@@ -25,7 +25,6 @@ class StaticDirectory extends Router {
 
     return this.static(request, response)
   }
-
 }
 
 module.exports = StaticDirectory
