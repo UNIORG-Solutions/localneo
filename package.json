@@ -22,12 +22,12 @@
     "test": "tape test/**/*.js test/*.js"
   },
   "dependencies": {
-    "ecstatic": "^2.1.0",
+    "ecstatic": "^3.2.0",
     "http-proxy": "^1.16.2",
     "open": "0.0.5"
   },
   "devDependencies": {
-    "standard": "^8.6.0",
+    "standard": "^11.0",
     "tape": "^4.9.0",
     "tape-chai": "^1.1.0"
   }

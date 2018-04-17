@@ -5,7 +5,6 @@ class TargetInfo {
     this.target = target
     this.name = name
   }
-
 }
 
 module.exports = TargetInfo
