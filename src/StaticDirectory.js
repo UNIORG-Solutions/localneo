@@ -16,6 +16,10 @@ class StaticDirectory extends Router {
   }
 
   handle (request, response) {
+    if (request.url.indexOf('~') !== -1) {
+      request.url = request.url.replace(/\/~\d+~\//, '/')
+    }
+
     if (request.url.endsWith('/')) {
       response.setHeader('Location', this.index)
       response.statusCode = 302
