@@ -15,7 +15,9 @@ A `destinations.json` file can be used to map applications and destinations to t
 ```json
 {
   "server": {
-    "port": "12345"
+    "port": "12345",
+    "hostname": "localhost",
+    "open": true
   },
   "service": {
     "sapui5": {

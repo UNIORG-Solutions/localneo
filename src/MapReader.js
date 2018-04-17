@@ -5,6 +5,8 @@ const Destination = require('./Destination')
 const Application = require('./Application')
 const ServiceFactory = require('./ServiceFactory')
 const AppRegistry = require('./Registry')
+const OpenListener = require('./OpenListener')
+const TargetInfo = require('./TargetInfo')
 
 class MapReader {
   constructor (neoApp, destinations, basePath) {
@@ -30,14 +32,20 @@ class MapReader {
       let name = route.name
       let target = this.getTarget(route.target, route.path)
 
-      return { path, desc, target, name }
+      return new TargetInfo({ path, desc, target, name })
     })
 
-    return new Application({
+    const app = new Application({
       subRoutes,
       index: this.neoApp.welcomeFile || 'index.html',
       root: this.dir
     })
+
+    if (this.dest.server && this.dest.server.open) {
+      OpenListener.addTo(app)
+    }
+
+    return app
   }
 
   getRouter () {
@@ -48,7 +56,7 @@ class MapReader {
     const reg = AppRegistry.getInstance()
     switch (targetInfo.type) {
       case 'application':
-        if (!this.dest.applications || !this.dest.applications[targetInfo.name]) {
+        if (!this.dest.applications || !this.dest.applications[ targetInfo.name ]) {
           console.error(`${this.name}: cannot find application definition for target ${targetInfo.name}`)
           if (reg.has('app:' + targetInfo.name)) {
             console.error(`${this.name}: using cached version...`)
@@ -57,14 +65,14 @@ class MapReader {
           return
         }
 
-        let app = this.getAppTarget(this.dest.applications[targetInfo.name])
+        let app = this.getAppTarget(this.dest.applications[ targetInfo.name ])
 
         if (app) {
           reg.put('app:' + targetInfo.name, app)
         }
         return app
       case 'destination':
-        if (!this.dest.destinations || !this.dest.destinations[targetInfo.name]) {
+        if (!this.dest.destinations || !this.dest.destinations[ targetInfo.name ]) {
           console.error(`${this.name}: cannot find destination definition for target ${targetInfo.name}`)
           if (reg.has('dest:' + targetInfo.name)) {
             console.error(`${this.name}: using cached version...`)
@@ -73,7 +81,7 @@ class MapReader {
           return
         }
 
-        let dest = this.getDestTarget(this.dest.destinations[targetInfo.name], targetInfo, targetPath)
+        let dest = this.getDestTarget(this.dest.destinations[ targetInfo.name ], targetInfo, targetPath)
         if (dest) {
           reg.put('dest:' + targetInfo.name, dest)
         }
@@ -81,8 +89,8 @@ class MapReader {
 
       case 'service':
         let serviceConfig = {}
-        if (this.dest && this.dest.service && this.dest.service[targetInfo.name]) {
-          serviceConfig = this.dest.service[targetInfo.name]
+        if (this.dest && this.dest.service && this.dest.service[ targetInfo.name ]) {
+          serviceConfig = this.dest.service[ targetInfo.name ]
         }
         return ServiceFactory.create(targetInfo, targetPath, serviceConfig)
     }
