@@ -14,7 +14,7 @@ class SapUI5 extends Router {
       }
 
       if (serviceConfig.version) {
-        prefix += serviceConfig.version
+        prefix += serviceConfig.version + '/'
       }
     }
 

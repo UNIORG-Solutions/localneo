@@ -1,6 +1,11 @@
 const StaticDirectory = require('./StaticDirectory')
 
 class Application extends StaticDirectory {
+  /**
+   * @param {string}   root      root directory
+   * @param {string}   index     index file / welcome file
+   * @param {Router[]} subRoutes handlers for other resources
+   */
   constructor ({ root, index, subRoutes }) {
     super({ root, index })
     this.subRoutes = subRoutes
