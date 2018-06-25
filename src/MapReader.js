@@ -92,7 +92,12 @@ class MapReader {
         if (this.dest && this.dest.service && this.dest.service[ targetInfo.name ]) {
           serviceConfig = this.dest.service[ targetInfo.name ]
         }
-        return ServiceFactory.create(targetInfo, targetPath, serviceConfig)
+
+        if (!reg.has(`srv:${targetInfo.name}@${targetInfo.entryPath}`)) {
+          reg.put(`srv:${targetInfo.name}@${targetInfo.entryPath}`, ServiceFactory.create(targetInfo, targetPath, serviceConfig))
+        }
+
+        return reg.get(`srv:${targetInfo.name}@${targetInfo.entryPath}`)
     }
   }
 
