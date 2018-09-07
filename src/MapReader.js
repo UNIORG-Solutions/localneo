@@ -32,7 +32,7 @@ class MapReader {
       let name = route.name
       let target = this.getTarget(route.target, route.path)
 
-      return new TargetInfo({ path, desc, target, name })
+      return new TargetInfo({path, desc, target, name})
     })
 
     const app = new Application({
@@ -56,7 +56,7 @@ class MapReader {
     const reg = AppRegistry.getInstance()
     switch (targetInfo.type) {
       case 'application':
-        if (!this.dest.applications || !this.dest.applications[ targetInfo.name ]) {
+        if (!this.dest.applications || !this.dest.applications[targetInfo.name]) {
           console.error(`${this.name}: cannot find application definition for target ${targetInfo.name}`)
           if (reg.has('app:' + targetInfo.name)) {
             console.error(`${this.name}: using cached version...`)
@@ -65,14 +65,17 @@ class MapReader {
           return
         }
 
-        let app = this.getAppTarget(this.dest.applications[ targetInfo.name ])
+        let app = this.getAppTarget(Object.assign({
+          name: targetInfo.name,
+          localUrl: targetPath
+        }, this.dest.applications[targetInfo.name]))
 
         if (app) {
           reg.put('app:' + targetInfo.name, app)
         }
         return app
       case 'destination':
-        if (!this.dest.destinations || !this.dest.destinations[ targetInfo.name ]) {
+        if (!this.dest.destinations || !this.dest.destinations[targetInfo.name]) {
           console.error(`${this.name}: cannot find destination definition for target ${targetInfo.name}`)
           if (reg.has('dest:' + targetInfo.name)) {
             console.error(`${this.name}: using cached version...`)
@@ -81,7 +84,7 @@ class MapReader {
           return
         }
 
-        let dest = this.getDestTarget(this.dest.destinations[ targetInfo.name ], targetInfo, targetPath)
+        let dest = this.getDestTarget(this.dest.destinations[targetInfo.name], targetInfo, targetPath)
         if (dest) {
           reg.put('dest:' + targetInfo.name, dest)
         }
@@ -89,8 +92,8 @@ class MapReader {
 
       case 'service':
         let serviceConfig = {}
-        if (this.dest && this.dest.service && this.dest.service[ targetInfo.name ]) {
-          serviceConfig = this.dest.service[ targetInfo.name ]
+        if (this.dest && this.dest.service && this.dest.service[targetInfo.name]) {
+          serviceConfig = this.dest.service[targetInfo.name]
         }
 
         if (!reg.has(`srv:${targetInfo.name}@${targetInfo.entryPath}`)) {
@@ -101,7 +104,7 @@ class MapReader {
     }
   }
 
-  getDestTarget ({ url: proxyUrl, auth }, { entryPath }, incomingPath) {
+  getDestTarget ({url: proxyUrl, auth}, {entryPath}, incomingPath) {
     return new Destination({
       url: proxyUrl,
       auth,
@@ -110,23 +113,38 @@ class MapReader {
     })
   }
 
-  getAppTarget ({ path: appPath, name }) {
+  directoryExists (path) {
+    try {
+      return !fs.statSync(path).isDirectory()
+    } catch (err) {
+      if (err.code !== 'ENOENT') {
+        console.error(err)
+      }
+      return false
+    }
+  }
+
+  getAppTarget ({path: appPath, name, remotePath, preferLocal, localUrl}) {
     if (!path.isAbsolute(appPath)) {
       appPath = path.normalize(path.join(this.dir, appPath))
     }
 
-    try {
-      if (!fs.statSync(appPath).isDirectory()) {
-        console.error(`cannot find direcory "${appPath}" for target ${name}`)
-      }
-    } catch (err) {
-      if (err.code === 'ENOENT') {
-        console.error(`cannot find direcory "${appPath}" for target ${name}`)
-      } else {
-        console.error(err)
-      }
+    const dirExists = this.directoryExists(appPath)
+
+    if (!dirExists && remotePath === undefined) {
+      console.error(`cannot find direcory "${appPath}" for target ${name}`)
       return
     }
+
+    if (remotePath && (preferLocal === false || !dirExists)) {
+      // proxy remote
+      console.warn(`redirecting to remote destination ${remotePath}`)
+      return new Destination({
+        url: remotePath,
+        localPath: localUrl
+      })
+    }
+
     let appReader = MapReader.fromApplicationDirectory(appPath)
 
     if (!appReader) {
