@@ -115,7 +115,7 @@ class MapReader {
 
   directoryExists (path) {
     try {
-      return !fs.statSync(path).isDirectory()
+      return fs.statSync(path).isDirectory()
     } catch (err) {
       if (err.code !== 'ENOENT') {
         console.error(err)

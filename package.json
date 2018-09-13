@@ -14,6 +14,9 @@
   "bugs": "https://github.com/UNIORG-Solutions/localneo/issues",
   "description": "Run your SAP-WebIDE based applications locally using the neo-app.json as a web server config.",
   "homepage": "https://github.com/UNIORG-Solutions/localneo",
+  "publishConfig": {
+    "@uniorg:registry": "https://registry.npmjs.org/"
+  },
   "bin": {
     "localneo": "./start.js"
   },
@@ -27,8 +30,10 @@
     "open": "0.0.5"
   },
   "devDependencies": {
+    "got": "^9.2.1",
     "standard": "^11.0",
     "tape": "^4.9.0",
-    "tape-chai": "^1.1.0"
+    "tape-chai": "^1.1.0",
+    "tmp": "0.0.33"
   }
 }
