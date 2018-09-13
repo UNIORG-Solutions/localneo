@@ -67,7 +67,7 @@ test('application uses local path if it exists', function (t) {
               name: 'testApp',
               remotePath: 'https://google.com'
             }
-          },
+          }
         ]
       },
       destinations: {
@@ -119,7 +119,7 @@ test('application uses remotePath if given', function (t) {
                 type: 'application',
                 name: 'testApp'
               }
-            },
+            }
           ]
         },
         destinations: {
@@ -147,8 +147,6 @@ test('application uses remotePath if given', function (t) {
       })
   })
 })
-
-
 
 test('application uses path over remotePath', function (t) {
   t.plan(1)
@@ -178,7 +176,7 @@ test('application uses path over remotePath', function (t) {
                 type: 'application',
                 name: 'testApp'
               }
-            },
+            }
           ]
         },
         destinations: {
