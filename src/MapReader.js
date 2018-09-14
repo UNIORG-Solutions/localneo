@@ -162,8 +162,8 @@ class MapReader {
       if (fs.existsSync(fullDir + '/destinations.json')) {
         dest = JSON.parse(fs.readFileSync(fullDir + '/destinations.json'))
       }
-      const neo_app = fs.readFileSync(fullDir + '/neo-app.json')
-      return new MapReader(JSON.parse(neo_app), dest, fullDir)
+      const neoApp = fs.readFileSync(fullDir + '/neo-app.json')
+      return new MapReader(JSON.parse(neoApp), dest, fullDir)
     } catch (err) {
       console.error(`Error while reading application files from "${fullDir}": ${err.message}`)
     }

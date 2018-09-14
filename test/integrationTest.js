@@ -227,7 +227,7 @@ test('service loads openui5', function (t) {
       destinations: {
         service: {
           sapui5: {}
-        },
+        }
       }
     }
   ).then(({url, cleanup}) => {
@@ -269,7 +269,7 @@ test('service loads sapui5 when requested to do so', function (t) {
           sapui5: {
             useSAPUI5: true
           }
-        },
+        }
       }
     }
   ).then(({url, cleanup}) => {
@@ -336,7 +336,7 @@ test('service loads sapui5 when requested to do so', function (t) {
           sapui5: {
             useSAPUI5: true
           }
-        },
+        }
       }
     }
   ).then(({url, cleanup}) => {
