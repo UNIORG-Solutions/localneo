@@ -6,6 +6,7 @@ const ecstatic = require('ecstatic')
 const http = require('http')
 require('tape-chai')
 const MapReader = require('../src/MapReader')
+const AppRegistry = require('../src/Registry')
 
 function buildMockServer (prepare, config) {
   const oldWd = process.cwd()
@@ -39,6 +40,7 @@ function buildMockServer (prepare, config) {
           server.close()
           tempdir.removeCallback()
           process.chdir(oldWd)
+          AppRegistry.getInstance().clear()
         }
 
         const url = `http://${server.address().address}:${server.address().port}`
@@ -195,6 +197,155 @@ test('application uses path over remotePath', function (t) {
       .then(response => {
         cleanup()
         t.equal(response.body, 'Hello World!')
+      })
+      .catch(err => {
+        cleanup()
+        console.error(err)
+        t.ok(false)
+      })
+  })
+})
+
+test('service loads openui5', function (t) {
+  t.plan(1)
+
+  buildMockServer(
+    () => { },
+    {
+      neoApp: {
+        routes: [
+          {
+            path: '/resources',
+            target: {
+              type: 'service',
+              name: 'sapui5',
+              entryPath: '/resources'
+            }
+          }
+        ]
+      },
+      destinations: {
+        service: {
+          sapui5: {}
+        },
+      }
+    }
+  ).then(({url, cleanup}) => {
+    const fileUrl = `${url}/resources/sap-ui-version.json`
+    got(fileUrl)
+      .then(response => {
+        cleanup()
+        const json = JSON.parse(response.body)
+        t.equal(json.name, 'OpenUI5 Distribution')
+      })
+      .catch(err => {
+        cleanup()
+        console.error(err)
+        t.ok(false)
+      })
+  })
+})
+
+test('service loads sapui5 when requested to do so', function (t) {
+  t.plan(1)
+
+  buildMockServer(
+    () => { },
+    {
+      neoApp: {
+        routes: [
+          {
+            path: '/resources',
+            target: {
+              type: 'service',
+              name: 'sapui5',
+              entryPath: '/resources'
+            }
+          }
+        ]
+      },
+      destinations: {
+        service: {
+          sapui5: {
+            useSAPUI5: true
+          }
+        },
+      }
+    }
+  ).then(({url, cleanup}) => {
+    const fileUrl = `${url}/resources/sap-ui-version.json`
+    got(fileUrl)
+      .then(response => {
+        cleanup()
+        const json = JSON.parse(response.body)
+        t.equal(json.name, 'SAPUI5 Distribution')
+      })
+      .catch(err => {
+        cleanup()
+        console.error(err)
+        t.ok(false)
+      })
+  })
+})
+
+test('service loads sapui5 when requested to do so', function (t) {
+  t.plan(1)
+
+  buildMockServer(
+    () => {
+      fs.mkdirSync('./app')
+      fs.writeFileSync('./app/neo-app.json', JSON.stringify({
+        routes: [{
+          'path': '/resources',
+          'target': {
+            'type': 'service',
+            'name': 'sapui5',
+            'entryPath': '/resources'
+          },
+          'description': 'SAPUI5 Resources'
+        }]
+      }))
+    },
+    {
+      neoApp: {
+        routes: [
+          {
+            path: '/app',
+            target: {
+              type: 'application',
+              name: 'app'
+            }
+          },
+          {
+            path: '/resources',
+            target: {
+              type: 'service',
+              name: 'sapui5',
+              entryPath: '/resources'
+            }
+          }
+        ]
+      },
+      destinations: {
+        applications: {
+          app: {
+            path: './app'
+          }
+        },
+        service: {
+          sapui5: {
+            useSAPUI5: true
+          }
+        },
+      }
+    }
+  ).then(({url, cleanup}) => {
+    const fileUrl = `${url}/resources/sap-ui-version.json`
+    got(fileUrl)
+      .then(response => {
+        const json = JSON.parse(response.body)
+        t.equal(json.name, 'SAPUI5 Distribution')
+        cleanup()
       })
       .catch(err => {
         cleanup()

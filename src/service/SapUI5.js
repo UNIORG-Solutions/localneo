@@ -17,8 +17,11 @@ class SapUI5 extends Router {
         prefix += serviceConfig.version + '/'
       }
     }
+    if (remotePath.startsWith('/')) {
+      prefix = prefix.replace(/\/+$/, '')
+    }
 
-    console.log('Serving UI5 from %s', prefix)
+    console.log('Serving UI5 from %s%s', prefix, localPath)
     this.proxy = proxy.createProxyServer({
       target: prefix + remotePath,
       secure: false,

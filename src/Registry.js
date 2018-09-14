@@ -17,6 +17,11 @@ class Registry {
     return getInstance()
   }
 
+  clear () {
+    this.cache = {}
+    return this
+  }
+
   has (key) {
     return this.cache[key] !== undefined
   }

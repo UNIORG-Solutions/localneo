@@ -96,11 +96,7 @@ class MapReader {
           serviceConfig = this.dest.service[targetInfo.name]
         }
 
-        if (!reg.has(`srv:${targetInfo.name}@${targetInfo.entryPath}`)) {
-          reg.put(`srv:${targetInfo.name}@${targetInfo.entryPath}`, ServiceFactory.create(targetInfo, targetPath, serviceConfig))
-        }
-
-        return reg.get(`srv:${targetInfo.name}@${targetInfo.entryPath}`)
+        return ServiceFactory.create(targetInfo, targetPath, serviceConfig)
     }
   }
 
@@ -164,9 +160,10 @@ class MapReader {
       }
       let dest = {}
       if (fs.existsSync(fullDir + '/destinations.json')) {
-        dest = require(fullDir + '/destinations.json')
+        dest = JSON.parse(fs.readFileSync(fullDir + '/destinations.json'))
       }
-      return new MapReader(require(fullDir + '/neo-app.json'), dest, fullDir)
+      const neo_app = fs.readFileSync(fullDir + '/neo-app.json')
+      return new MapReader(JSON.parse(neo_app), dest, fullDir)
     } catch (err) {
       console.error(`Error while reading application files from "${fullDir}": ${err.message}`)
     }
