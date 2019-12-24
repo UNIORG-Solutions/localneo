@@ -100,10 +100,11 @@ class MapReader {
     }
   }
 
-  getDestTarget ({url: proxyUrl, auth}, {entryPath}, incomingPath) {
+  getDestTarget ({url: proxyUrl, auth, headers}, {entryPath}, incomingPath) {
     return new Destination({
       url: proxyUrl,
       auth,
+      headers,
       remotePath: entryPath,
       localPath: incomingPath
     })

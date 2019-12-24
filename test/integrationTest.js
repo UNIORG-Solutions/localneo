@@ -354,3 +354,70 @@ test('service loads sapui5 when requested to do so', function (t) {
       })
   })
 })
+
+test('application uses HTTP destination', function (t) {
+  t.plan(5)
+
+  buildMockServer(
+    () => {
+      const server = http.createServer((req, res) => {
+        t.equal(req.url, '/api/test')
+        t.equal(req.headers['user-agent'], 'localneo')
+        t.equal(req.headers['sap-client'], '200')
+        t.equal(req.headers['x-my-custom-header'], 'custom value')
+        res.writeHead(200, { 'Content-Type': 'text/plain' })
+        res.end('Hello World!')
+      })
+      return new Promise(resolve => {
+        server.listen(0, 'localhost', undefined, () => {
+          server.unref()
+          resolve(`http://${server.address().address}:${server.address().port}`)
+        })
+      })
+    },
+    (url) => (
+      {
+        neoApp: {
+          routes: [
+            {
+              path: '/remote-service',
+              target: {
+                type: 'destination',
+                name: 'remote-service'
+              }
+            }
+          ]
+        },
+        destinations: {
+          destinations: {
+            'remote-service': {
+              url: url,
+              auth: 'MyUser:MyPassword',
+              headers: {
+                'sap-client': '200',
+                'X-My-Custom-Header': 'custom value'
+              }
+            }
+          }
+        }
+      }
+    )
+  ).then(({url, cleanup}) => {
+    got.post(`${url}/remote-service/api/test`, {
+      headers: {
+        'user-agent': 'localneo',
+        'Content-Type': 'text/plain'
+      },
+      body: 'Hello Server!'
+    })
+      .then(response => {
+        cleanup()
+        t.equal(response.body, 'Hello World!')
+      })
+      .catch(err => {
+        cleanup()
+        console.error(err)
+        t.ok(false)
+      })
+  })
+})
