@@ -25,9 +25,9 @@
     "test": "tape test/**/*.js test/*.js"
   },
   "dependencies": {
-    "ecstatic": "^3.2.0",
+    "ecstatic": "^3.3.2",
     "http-proxy": "^1.16.2",
-    "open": "0.0.5"
+    "open": "^7.0.0"
   },
   "devDependencies": {
     "got": "^9.2.1",
