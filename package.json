@@ -1,6 +1,6 @@
 {
   "name": "@uniorg/localneo",
-  "version": "1.7.1",
+  "version": "1.8.1",
   "author": "m.schmale@uniorg.de",
   "license": "MIT",
   "keywords": [
@@ -25,14 +25,14 @@
     "test": "tape test/**/*.js test/*.js"
   },
   "dependencies": {
-    "ecstatic": "^3.3.2",
+    "ecstatic": "^4.0.0",
     "http-proxy": "^1.16.2",
     "open": "^7.0.0"
   },
   "devDependencies": {
-    "got": "^9.2.1",
-    "standard": "^11.0",
-    "tape": "^4.9.0",
+    "got": "^9.6.0",
+    "standard": "^12.0",
+    "tape": "^4.10.1",
     "tape-chai": "^1.1.0",
     "tmp": "0.0.33"
   }
