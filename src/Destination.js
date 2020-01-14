@@ -19,6 +19,14 @@ class Destination extends Router {
       Object.keys(this.headers)
         .forEach(name => proxyReq.setHeader(name, this.headers[name]))
     })
+
+    this.proxy.on('error', (err, req, res) => {
+      console.error("Destination error: ", req.url, err);
+      res.writeHead(500, {
+        'Content-Type': 'text/plain'
+      });
+      res.end(JSON.stringify(err, null, 4));
+    })
   }
 
   handle (request, response) {
