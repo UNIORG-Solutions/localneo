@@ -17,11 +17,15 @@ class MapReader {
 
     this.port = 4567
     this.hostname = 'localhost'
+    this.secure = false
     if (this.dest.server && this.dest.server.port) {
       this.port = this.dest.server.port
     }
     if (this.dest.server && this.dest.server.hostname) {
       this.hostname = this.dest.server.hostname
+    }
+    if (this.dest.server && this.dest.server.secure) {
+      this.secure = this.dest.server.secure
     }
   }
 
@@ -32,13 +36,14 @@ class MapReader {
       let name = route.name
       let target = this.getTarget(route.target, route.path)
 
-      return new TargetInfo({path, desc, target, name})
+      return new TargetInfo({ path, desc, target, name })
     })
 
     const app = new Application({
       subRoutes,
       index: this.neoApp.welcomeFile || 'index.html',
-      root: this.dir
+      root: this.dir,
+      secure: this.secure
     })
 
     if (this.dest.server && this.dest.server.open) {
@@ -100,10 +105,12 @@ class MapReader {
     }
   }
 
-  getDestTarget ({url: proxyUrl, auth}, {entryPath}, incomingPath) {
+  getDestTarget ({ url: proxyUrl, auth, headers, verbose }, { entryPath }, incomingPath) {
     return new Destination({
       url: proxyUrl,
       auth,
+      headers,
+      verbose,
       remotePath: entryPath,
       localPath: incomingPath
     })
@@ -120,7 +127,7 @@ class MapReader {
     }
   }
 
-  getAppTarget ({path: appPath, name, remotePath, preferLocal, localUrl}) {
+  getAppTarget ({ path: appPath, name, remotePath, preferLocal, localUrl }) {
     if (!path.isAbsolute(appPath)) {
       appPath = path.normalize(path.join(this.dir, appPath))
     }
