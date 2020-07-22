@@ -10,7 +10,7 @@ const AppRegistry = require('../src/Registry')
 
 function buildMockServer (prepare, config) {
   const oldWd = process.cwd()
-  const tempdir = tmp.dirSync({unsafeCleanup: true})
+  const tempdir = tmp.dirSync({ unsafeCleanup: true })
   if (!prepare) {
     prepare = function () { Promise.resolve() }
   }
@@ -43,8 +43,8 @@ function buildMockServer (prepare, config) {
           AppRegistry.getInstance().clear()
         }
 
-        const url = `http://${server.address().address}:${server.address().port}`
-        resolve({url, cleanup})
+        const url = `${server.protocol}://${server.address().address}:${server.address().port}`
+        resolve({ url, cleanup })
       })
       app.listen(0, 'localhost')
     })
@@ -74,11 +74,11 @@ test('application uses local path if it exists', function (t) {
       },
       destinations: {
         applications: {
-          testApp: {path: './app'}
+          testApp: { path: './app' }
         }
       }
     }
-  ).then(({url, cleanup}) => {
+  ).then(({ url, cleanup }) => {
     const fileUrl = `${url}/app/index.html`
     got(fileUrl)
       .then(response => {
@@ -107,7 +107,7 @@ test('application uses remotePath if given', function (t) {
       return new Promise(resolve => {
         server.listen(0, 'localhost', undefined, () => {
           server.unref()
-          resolve(`http://${server.address().address}:${server.address().port}`)
+          resolve(`${server.protocol}://${server.address().address}:${server.address().port}`)
         })
       })
     },
@@ -135,7 +135,7 @@ test('application uses remotePath if given', function (t) {
         }
       }
     )
-  ).then(({url, cleanup}) => {
+  ).then(({ url, cleanup }) => {
     const fileUrl = `${url}/app/index.html`
     got(fileUrl)
       .then(response => {
@@ -164,7 +164,7 @@ test('application uses path over remotePath', function (t) {
       return new Promise(resolve => {
         server.listen(0, 'localhost', undefined, () => {
           server.unref()
-          resolve(`http://${server.address().address}:${server.address().port}`)
+          resolve(`${server.protocol}://${server.address().address}:${server.address().port}`)
         })
       })
     },
@@ -191,7 +191,7 @@ test('application uses path over remotePath', function (t) {
         }
       }
     )
-  ).then(({url, cleanup}) => {
+  ).then(({ url, cleanup }) => {
     const fileUrl = `${url}/app/index.html`
     got(fileUrl)
       .then(response => {
@@ -230,7 +230,7 @@ test('service loads openui5', function (t) {
         }
       }
     }
-  ).then(({url, cleanup}) => {
+  ).then(({ url, cleanup }) => {
     const fileUrl = `${url}/resources/sap-ui-version.json`
     got(fileUrl)
       .then(response => {
@@ -272,7 +272,7 @@ test('service loads sapui5 when requested to do so', function (t) {
         }
       }
     }
-  ).then(({url, cleanup}) => {
+  ).then(({ url, cleanup }) => {
     const fileUrl = `${url}/resources/sap-ui-version.json`
     got(fileUrl)
       .then(response => {
@@ -339,7 +339,7 @@ test('service loads sapui5 when requested to do so', function (t) {
         }
       }
     }
-  ).then(({url, cleanup}) => {
+  ).then(({ url, cleanup }) => {
     const fileUrl = `${url}/resources/sap-ui-version.json`
     got(fileUrl)
       .then(response => {
@@ -371,7 +371,7 @@ test('application uses HTTP destination', function (t) {
       return new Promise(resolve => {
         server.listen(0, 'localhost', undefined, () => {
           server.unref()
-          resolve(`http://${server.address().address}:${server.address().port}`)
+          resolve(`${server.protocol}://${server.address().address}:${server.address().port}`)
         })
       })
     },
@@ -402,7 +402,7 @@ test('application uses HTTP destination', function (t) {
         }
       }
     )
-  ).then(({url, cleanup}) => {
+  ).then(({ url, cleanup }) => {
     got.post(`${url}/remote-service/api/test`, {
       headers: {
         'user-agent': 'localneo',
@@ -410,6 +410,51 @@ test('application uses HTTP destination', function (t) {
       },
       body: 'Hello Server!'
     })
+      .then(response => {
+        cleanup()
+        t.equal(response.body, 'Hello World!')
+      })
+      .catch(err => {
+        cleanup()
+        console.error(err)
+        t.ok(false)
+      })
+  })
+})
+
+test('application works with self-signed HTTPS server', function (t) {
+  t.plan(1)
+
+  buildMockServer(
+    () => {
+      fs.mkdirSync('./app')
+      fs.writeFileSync('./app/index.html', 'Hello World!')
+    },
+    {
+      neoApp: {
+        routes: [
+          {
+            path: '/app',
+            target: {
+              type: 'application',
+              name: 'testApp',
+              remotePath: 'https://google.com'
+            }
+          }
+        ]
+      },
+      destinations: {
+        server: {
+          secure: true
+        },
+        applications: {
+          testApp: { path: './app' }
+        }
+      }
+    }
+  ).then(({ url, cleanup }) => {
+    const fileUrl = `${url}/app/index.html`
+    got(fileUrl, { rejectUnauthorized: false })
       .then(response => {
         cleanup()
         t.equal(response.body, 'Hello World!')

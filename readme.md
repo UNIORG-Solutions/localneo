@@ -5,7 +5,7 @@ Run your SAP-WebIDE based applications locally using the neo-app.json as a web s
 ## install
 
 ``` 
-$ npm install --global @uniorg/localneo
+$ npm install --global koemaeda/localneo
 ``` 
 
 ## configuration
@@ -17,6 +17,7 @@ A `destinations.json` file can be used to map applications and destinations to t
   "server": {
     "port": "12345",
     "hostname": "localhost",
+    "secure": false,
     "open": true
   },
   "service": {
@@ -36,7 +37,11 @@ A `destinations.json` file can be used to map applications and destinations to t
 
   "destinations": {
     "SAP_BACKEND": {
-      "url": "https://our_secret_sap_system.com" 
+      "url": "https://our_secret_sap_system.com",
+      "auth": "MYUSER:MyPassword",
+      "headers": {
+        "sap-client": "123"
+      }
     }
   }
 }
@@ -50,8 +55,8 @@ $ cd my/cool/neo/project
 $ localneo
 ``` 
 
-`localneo` will start a webserver on port 4567. 
-Open you browser on [localhost:4567](http://localhost:4567) to get started.
+`localneo` will start a webserver on port 12345. 
+Open you browser on `https://localhost:4567` to get started.
 
 
 

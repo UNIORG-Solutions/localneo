@@ -6,8 +6,8 @@ class Application extends StaticDirectory {
    * @param {string}   index     index file / welcome file
    * @param {Router[]} subRoutes handlers for other resources
    */
-  constructor ({ root, index, subRoutes }) {
-    super({ root, index })
+  constructor ({ root, index, subRoutes, secure }) {
+    super({ root, index, secure })
     this.subRoutes = subRoutes
   }
 

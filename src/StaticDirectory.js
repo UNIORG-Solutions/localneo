@@ -2,8 +2,8 @@ const Router = require('./Router')
 const ecstatic = require('ecstatic')
 
 class StaticDirectory extends Router {
-  constructor ({ root, index }) {
-    super()
+  constructor ({ root, index, secure }) {
+    super({ secure })
     this.rootDir = root
     this.index = index
     this.static = ecstatic({

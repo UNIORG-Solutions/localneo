@@ -27,7 +27,8 @@
   "dependencies": {
     "ecstatic": "^4.0.0",
     "http-proxy": "^1.16.2",
-    "open": "^7.0.0"
+    "open": "^7.0.0",
+    "pem": "^1.14.4"
   },
   "devDependencies": {
     "got": "^9.6.0",
